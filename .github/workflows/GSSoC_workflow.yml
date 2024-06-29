@@ -21,6 +21,7 @@ jobs:
             const issueLabels = [];
 
             if (issueBody && issueBody.includes("[X] I'm a GSSOC'24 contributor")) {
+
               issueLabels.push("gssoc", "level1");
             }
 
