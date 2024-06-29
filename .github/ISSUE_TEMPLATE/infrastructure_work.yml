@@ -1,7 +1,7 @@
 name: Infrastructure Work 🏗️
 description: File an issue related to infrastructure work
 title: "🏗️ [Infrastructure]: "
-labels: 'infras'
+labels: 'infrastructure'
 body:
   - type: textarea
     id: summary
