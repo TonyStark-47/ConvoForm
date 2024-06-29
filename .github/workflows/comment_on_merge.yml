@@ -24,6 +24,7 @@ jobs:
           ISSUE_NUMBER=$(echo "${{ github.event.pull_request.body }}" | grep -oP '(?<=#)\d+')
           if [ -z "$ISSUE_NUMBER" ]; then
             echo "No issue number found in PR body"
+            ISSUE_NUMBER=""
           fi
           echo "issue_number=$ISSUE_NUMBER" >> $GITHUB_ENV
 
