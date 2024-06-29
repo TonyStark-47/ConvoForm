@@ -20,9 +20,7 @@ jobs:
       - name: Get Issue Number
         id: get-issue-number
         run: |
-          if [ -z "${{ github.event.pull_request.body }}" ]; then
-            exit 0
-          else
+          if [ -n "${{ github.event.pull_request.body }}" ]; then
             ISSUE_NUMBER=$(echo "${{ github.event.pull_request.body }}" | grep -oP '(?<=#)\d+')
             if [ -n "$ISSUE_NUMBER" ]; then
               echo "::set-output name=issue_number::$ISSUE_NUMBER"
