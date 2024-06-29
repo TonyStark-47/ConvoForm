@@ -7,12 +7,12 @@ on:
 permissions:
   issues: write
   pull-requests: read
-  contents: read  # Ensure contents permission is included
+  contents: read
 
 jobs:
   comment:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == 'true'
 
     steps:
       - name: Checkout Repository
@@ -24,7 +24,7 @@ jobs:
           ISSUE_NUMBER=$(echo "${{ github.event.pull_request.body }}" | grep -oP '(?<=#)\d+')
           if [ -z "$ISSUE_NUMBER" ]; then
             echo "No issue number found in PR body"
-            ISSUE_NUMBER=""
+            exit 0
           fi
           echo "issue_number=$ISSUE_NUMBER" >> $GITHUB_ENV
 
