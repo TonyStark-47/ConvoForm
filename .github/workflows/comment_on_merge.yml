@@ -20,14 +20,17 @@ jobs:
       - name: Get Issue Number
         id: get-issue-number
         run: |
-          ISSUE_NUMBER=$(echo "${{ github.event.pull_request.body }}" | grep -oP '(?<=#)\d+')
-          if [ -n "$ISSUE_NUMBER" ]; then
-            echo "::set-output name=issue_number::$ISSUE_NUMBER"
-          else
-            echo "No issue number found in PR body"
+          if [ -z "${{ github.event.pull_request.body }}" ]; then
             exit 0
+          else
+            ISSUE_NUMBER=$(echo "${{ github.event.pull_request.body }}" | grep -oP '(?<=#)\d+')
+            if [ -n "$ISSUE_NUMBER" ]; then
+              echo "::set-output name=issue_number::$ISSUE_NUMBER"
+            else
+              echo "No issue number found in PR body"
+              exit 0
+            fi
           fi
-          echo "::set-output name=issue_number::$ISSUE_NUMBER"
 
       - name: Comment on Issue
         uses: actions/github-script@v5
