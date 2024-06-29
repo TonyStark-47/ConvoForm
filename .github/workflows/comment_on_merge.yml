@@ -11,11 +11,11 @@ permissions:
 jobs:
   comment:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == 'true'
+    if: github.event.pull_request.merged == true
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: Get Issue Number
         id: get-issue-number
@@ -26,23 +26,21 @@ jobs:
           else
             ISSUE_NUMBER=$(echo "${{ github.event.pull_request.body }}" | grep -oP '(?<=#)\d+')
             if [ -n "$ISSUE_NUMBER" ]; then
-              echo "issue_number=$ISSUE_NUMBER" >> $GITHUB_ENV
+              echo "::set-output name=issue_number::$ISSUE_NUMBER"
             else
               echo "No issue number found in PR body"
               echo "issue_number=null" >> $GITHUB_ENV
+              exit 0
             fi
           fi
-          echo "issue_number=$ISSUE_NUMBER"
-        shell: bash
-        continue-on-error: true
 
       - name: Comment on Issue
-        if: steps.get-issue-number.outputs.issue_number != 'null'
-        uses: actions/github-script@v6
+        if: env.issue_number != 'null'
+        uses: actions/github-script@v5
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const issueNumber = process.env.ISSUE_NUMBER;
+            const issueNumber = '${{ steps.get-issue-number.outputs.issue_number }}';
             const issue = await github.rest.issues.get({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -59,7 +57,3 @@ jobs:
               issue_number: issueNumber,
               body: greetingMessage
             });
-
-      - name: No Issue Number Found
-        if: steps.get-issue-number.outputs.issue_number == 'null'
-        run: echo "No valid issue number found in the PR body. Skipping issue comment step."
