@@ -32,14 +32,17 @@ jobs:
               echo "issue_number=null" >> $GITHUB_ENV
             fi
           fi
+          echo "issue_number=$ISSUE_NUMBER"
+        shell: bash
+        continue-on-error: true
 
       - name: Comment on Issue
-        if: env.issue_number != 'null'
+        if: steps.get-issue-number.outputs.issue_number != 'null'
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const issueNumber = process.env.issue_number;
+            const issueNumber = process.env.ISSUE_NUMBER;
             const issue = await github.rest.issues.get({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -58,5 +61,5 @@ jobs:
             });
 
       - name: No Issue Number Found
-        if: env.issue_number == 'null'
+        if: steps.get-issue-number.outputs.issue_number == 'null'
         run: echo "No valid issue number found in the PR body. Skipping issue comment step."
