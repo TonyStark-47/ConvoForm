@@ -30,7 +30,6 @@ jobs:
             else
               echo "No issue number found in PR body"
               echo "issue_number=null" >> $GITHUB_ENV
-              exit 0
             fi
           fi
 
