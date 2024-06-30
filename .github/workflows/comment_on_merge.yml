@@ -25,6 +25,7 @@ jobs:
             echo "issue_number=null" >> $GITHUB_ENV
           else
             ISSUE_NUMBER=$(echo "${{ github.event.pull_request.body }}" | grep -oP '(?<=#)\d+')
+            echo "Extracted ISSUE_NUMBER: $ISSUE_NUMBER"  # Print the ISSUE_NUMBER
             if [ -z "$ISSUE_NUMBER" ]; then
               echo "No issue number found in PR body"
               echo "issue_number=null" >> $GITHUB_ENV
