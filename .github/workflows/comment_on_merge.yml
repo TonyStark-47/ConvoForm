@@ -25,12 +25,11 @@ jobs:
             echo "issue_number=null" >> $GITHUB_ENV
           else
             ISSUE_NUMBER=$(echo "${{ github.event.pull_request.body }}" | grep -oP '(?<=#)\d+')
-            if [ -n "$ISSUE_NUMBER" ]; then
-              echo "::set-output name=issue_number::$ISSUE_NUMBER"
-            else
+            if [ -z "$ISSUE_NUMBER" ]; then
               echo "No issue number found in PR body"
               echo "issue_number=null" >> $GITHUB_ENV
-              exit 0
+            else
+              echo "issue_number=$ISSUE_NUMBER" >> $GITHUB_ENV
             fi
           fi
 
